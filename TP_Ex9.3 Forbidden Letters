@@ -1,0 +1,142 @@
+"""
+
+Exercise 9.3. Write a function named avoids that takes a word and a string of forbidden letters,
+and that returns True if the word doesn’t use any of the forbidden letters.
+
+Write a program that prompts the user to enter a string of forbidden letters and then prints the
+number of words that don’t contain any of them.
+
+***Can you find a combination of 5 forbidden letters that excludes the smallest number of words?***
+
+"""
+
+from itertools import combinations
+
+
+def in_string(letter, string) :
+  """Self explanatory
+  """
+  if letter in string :
+    return True
+
+
+def avoids(word,string) :
+  """Takes a word and a string of forbidden letters then returns True
+  should that word not contain any of the letters
+  """
+  for letter in word :
+    if in_string(letter, string) :
+      return False
+
+  return True
+    
+
+def forbidden_words(string) :
+  """Prompts the user for a string of letters and returns the number of
+  words that do not contain those letters. List of words are pulled from
+  Moby Project list of crosswords, 'word.txt' in the same directory as
+  this script. This file is 113,000+ words in size.
+
+  INS
+  none
+
+  OUTS
+  count:  the overall length of list of words that do not contain the user
+          provided letters
+  """
+
+  file = 'words.txt'
+  fin = open(file)
+  line = fin.readline() #reads one line of the text file
+  
+  f_list = []
+  count = 0
+  
+  for n, line in enumerate(fin) :
+    word = line.strip() #each word in words.txt ends with a \n character
+
+    if avoids(word,string) :
+      count += 1
+
+  return count
+
+
+def max_words() :
+
+  #Runs the alphabet through forbidden_words one at a time to produce a list
+  #of the number of words that can be produced without that letter
+  alph = 'abcdefghijklmnopqrstuvwxyz'
+  f_len_list = [forbidden_words(l) for l in alph]
+  alph_f_len_list = []
+
+
+  #creates a tuple list where each item in the list: (letter, count) where
+  #letter (expressed by its ord number) is the corresponding letter that
+  #produces the count result from forbidden_words()
+  for i in range(26) :
+    f = (97+i,f_len_list[i])
+    alph_f_len_list.append(f)
+
+
+  #sorts the list by the count, not the letter
+  alph_f_len_list.sort(key=lambda x: x[1])
+  
+  #select only the top 5 letters
+  final_wordlist = alph_f_len_list[-5:]
+  
+  forbidden_letters = ''.join([chr(final_wordlist[i][0]) for i in range(5)])
+  
+  print("The 5 letters that, when forbidden from being used, allow the largest number of legal Moby Project crosswords are:\n\n", forbidden_letters)
+  print("\nWithout their use,", forbidden_words(forbidden_letters), "words can be produced")
+
+
+max_words()
+
+
+#If my code is correct, then the combination of letters that produces the largest list of words is JQWXZ.
+#The list is 96,424 words long, out of a potential 113,809 valid crosswords.
+#Or 84.7% of all words can still be produced despite not containing the lettes J, Q, W, X, or Z.
+
+
+"""
+Previous examples in the chapter leading up to this problem:
+
+def print_twenty(file) :
+  file = 'words.txt'
+  fin = open(file)
+  line = fin.readline()
+
+  for n, line in enumerate(fin) :
+    word = line.strip()
+    if len(word) > 20 :
+      print(word)
+
+
+def has_no_e(word) :
+  if word.count('e') == 0 :
+    return True
+  
+
+def print_no_e(file) :
+  file = 'words.txt'
+  fin = open(file)
+  line = fin.readline()
+  
+  no_e = []
+  
+  for n, line in enumerate(fin) :
+    word = line.strip()
+
+    if has_no_e(word) :
+      no_e.append(word)
+      
+
+  print(len(no_e))
+  print(n)
+  print(str(round((100 * len(no_e)) / n, 2)) + "%")
+
+"""
+
+
+    
+
